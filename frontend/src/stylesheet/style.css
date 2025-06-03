@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --cinza: #3D3D3D; 
+  --verde-claro: #84b026;
+  --verde-piscina: #217373;
+  --verde-piscina-escuro: #173540;
+  --azul-escuro: #161F30;
+
+  --font-roboto: 'Roboto', sans-serif;
+}

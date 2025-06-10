@@ -22,4 +22,40 @@ model User{
   dataNascimento DateTime
 
   @@map("users")
+
+  times Time[]
+  campeonatos Campeonato[]
+}
+
+model Time{
+  id Int @id @default(autoincrement())
+  nome String
+  usuario Int
+  
+  user User @relation(fields: [usuario], references: [id])
+
+  @@map("times")
+}
+
+model Campeonato{
+
+  id Int @id @default(autoincrement())
+  usuario Int
+  nome String
+  dataInicio DateTime
+  dataFim DateTime
+  descricao String
+  premio Float
+
+  user User @relation(fields: [usuario], references: [id])
+
+  @@map("campeonato")
+}
+
+model Campeonato_Time{
+
+  id Int @id @default(autoincrement())
+  campeonatoId Int
+  timeId Int[]
+
 }

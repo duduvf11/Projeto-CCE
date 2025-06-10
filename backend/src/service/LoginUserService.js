@@ -1,5 +1,7 @@
 import prismaClient from "../prisma/index.js";
 import { compare } from "bcryptjs";
+import jwt from "jsonwebtoken"
+const {sign} = jwt
 
 class LoginUserService{
   async execute({email, senha}){
@@ -9,16 +11,29 @@ class LoginUserService{
         email: email
       }
     })
-    console.log(user)
 
     if (!user) return null
     
     const passwordMatch = await compare(senha, user.senha)
-    console.log(passwordMatch)
+
+    const userId = user.id
 
     if (!passwordMatch) return null
 
-    return {ok: "true"}
+    const token = sign({
+      nome: user.nome,
+      email: user.email
+    }, process.env.JWT_SECRET, {
+      subject: userId.toString(),
+      expiresIn: "30d"
+    })
+
+    return {
+      id: userId,
+      nome: user.nome,
+      email: user.email,
+      token: token
+    }
   }
 }
 

@@ -17,8 +17,6 @@ class LoginUserController{
       maxAge: 24 * 60 * 60 * 1000 * 7
     });
 
-    console.log("AQUI")
-
   return res.json(login)
 
   }

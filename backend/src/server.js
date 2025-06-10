@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 
 import createUserRouter from "./routes/createUserRouter.js"
 import loginUserRouter from "./routes/loginUserRouter.js"
+import detailUserRouter from "./routes/detailUserRouter.js"
 
 const app = express()
 
@@ -12,8 +13,8 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use("/create", createUserRouter)
-
 app.use("/login", loginUserRouter)
+app.use("/me", detailUserRouter)
 
 app.listen(3000, () => {
   console.log("Rodando na porta 3000")

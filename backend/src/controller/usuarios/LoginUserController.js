@@ -1,4 +1,4 @@
-import { LoginUserService } from "../service/LoginUserService.js";
+import { LoginUserService } from "../../service/usuarios/LoginUserService.js";
 
 class LoginUserController{
   async handle(req, res){

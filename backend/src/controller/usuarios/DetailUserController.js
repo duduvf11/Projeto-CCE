@@ -1,4 +1,4 @@
-import { DetailUserService } from "../service/DetailUserService.js"
+import { DetailUserService } from "../../service/usuarios/DetailUserService.js"
 
 class DetailUserController{
   async handle(req, res){

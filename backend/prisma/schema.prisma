@@ -24,7 +24,6 @@ model User{
   @@map("users")
 
   times Time[]
-  campeonatos Campeonato[]
 }
 
 model Time{
@@ -33,29 +32,20 @@ model Time{
   usuario Int
   
   user User @relation(fields: [usuario], references: [id])
+  jogadores Jogador[]
 
   @@map("times")
 }
 
-model Campeonato{
-
+model Jogador{
   id Int @id @default(autoincrement())
-  usuario Int
   nome String
-  dataInicio DateTime
-  dataFim DateTime
-  descricao String
-  premio Float
+  numeroCamisa Int
+  idTime Int
+  genero String
+  altura Float
 
-  user User @relation(fields: [usuario], references: [id])
+  time Time @relation(fields: [idTime], references: [id])
 
-  @@map("campeonato")
-}
-
-model Campeonato_Time{
-
-  id Int @id @default(autoincrement())
-  campeonatoId Int
-  timeId Int[]
-
+  @@map("jogadores")
 }

@@ -1,4 +1,4 @@
-import prismaClient from "../prisma/index.js";
+import prismaClient from "../../prisma/index.js";
 import { compare } from "bcryptjs";
 import jwt from "jsonwebtoken"
 const {sign} = jwt

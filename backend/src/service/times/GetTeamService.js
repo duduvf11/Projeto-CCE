@@ -1,27 +1,24 @@
 import prismaClient from "../../prisma/index.js"
 
-class GetTeamService{
-  async execute({userId}){
-    
-    try{
+class GetTeamService {
+  async execute({ userId }) {
 
-      console.log(userId)
+    try {
 
-      const getTeam = await prismaClient.time.findMany({
+      const teams = await prismaClient.time.findMany({
         where: {
-          usuario: parseInt(userId)
+          usuario: parseInt(userId),
         }
-      })
+      });
 
-      if (!getTeam) return 0
+      return teams;
 
-      return getTeam
-
-    } catch(err){
-      console.error(err)
-      return null
+    } catch (err) {
+      
+      console.error("Erro ao buscar times do usuário:", err);
+      throw new Error("Erro ao buscar times.");
     }
   }
 }
 
-export {GetTeamService}
+export { GetTeamService };

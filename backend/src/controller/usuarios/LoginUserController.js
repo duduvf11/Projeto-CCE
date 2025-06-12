@@ -11,6 +11,8 @@ class LoginUserController{
 
   const token = login.token;
 
+  res.clearCookie('token')
+
   res.cookie('token', token, {
       httpOnly: false,
       secure: false,

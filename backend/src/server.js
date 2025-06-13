@@ -7,6 +7,7 @@ import loginUserRouter from "./routes/usuarios/loginUserRouter.js"
 import detailUserRouter from "./routes/usuarios/detailUserRouter.js"
 import teamsRouter from "./routes/times/teamsRouter.js"
 import playerRouter from "./routes/jogadores/playerRouter.js"
+import championshipRouter from "./routes/campeonato/championshipRouter.js"
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use("/login", loginUserRouter)
 app.use("/me", detailUserRouter)
 app.use("/team", teamsRouter)
 app.use("/player", playerRouter)
+app.use("/championship", championshipRouter)
 
 app.listen(3000, () => {
   console.log("Rodando na porta 3000")

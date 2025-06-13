@@ -23,6 +23,7 @@ model User{
 
   @@map("users")
 
+  campeonato Campeonato[]
   times Time[]
 }
 
@@ -32,7 +33,9 @@ model Time{
   usuario Int
   
   user User @relation(fields: [usuario], references: [id])
+
   jogadores Jogador[]
+  campeonatoTime CampeonatoTime[]
 
   @@map("times")
 }
@@ -54,3 +57,39 @@ model Jogador{
 
   @@map("jogadores")
 }
+
+enum Formato{
+  MATA_MATA
+  GRUPO
+  MATA_MATA_CHAVEAMENTO
+  SUICO
+}
+
+model Campeonato {
+  id           Int       @id @default(autoincrement())
+  usuarioId    Int
+  nome         String
+  dataInicio   DateTime
+  dataFim      DateTime
+  descricao    String
+  premio       Float
+  formato      Formato
+  numeroTimes  Int
+
+  usuario      User       @relation(fields: [usuarioId], references: [id])
+  times        CampeonatoTime[]
+
+  @@map("campeonatos")
+}
+
+model CampeonatoTime {
+  id            Int @id @default(autoincrement())
+  campeonatoId  Int
+  timeId        Int
+
+  campeonato    Campeonato @relation(fields: [campeonatoId], references: [id])
+  time          Time       @relation(fields: [timeId], references: [id])
+
+  @@map("campeonato_time")
+}
+

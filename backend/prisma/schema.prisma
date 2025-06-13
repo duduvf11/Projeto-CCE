@@ -37,12 +37,17 @@ model Time{
   @@map("times")
 }
 
+enum Genero{
+  MASCULINO
+  FEMININO
+}
+
 model Jogador{
   id Int @id @default(autoincrement())
   nome String
   numeroCamisa Int
   idTime Int
-  genero String
+  genero Genero
   altura Float
 
   time Time @relation(fields: [idTime], references: [id])

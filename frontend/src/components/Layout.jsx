@@ -9,7 +9,7 @@ export default function Layout() {
       <Navbar />
       <div className="flex h-full">
         <Sidebar />
-        <main className="flex items-center justify-center w-full bg-[#f0f0f0]">
+        <main className="flex items-center justify-center w-full bg-[linear-gradient(90deg,_rgba(33,115,115,0.5)_23%,_rgba(83,145,77,0.5)_60%,_rgba(132,176,38,0.5)_100%)]">
           <Outlet />
         </main>
       </div>

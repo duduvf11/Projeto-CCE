@@ -8,11 +8,19 @@ import { ListFinishedChampionshipsController } from "../../controller/campeonato
 import { ListOngoingChampionshipsController } from "../../controller/campeonato/ListOngoingChampionshipsController.js";
 import { ListUpcomingChampionshipsController } from "../../controller/campeonato/ListUpcomingChampionshipsController.js";
 import { GetChampionshipController } from "../../controller/campeonato/GetChampionshipController.js";
+import { JoinChampionshipController } from "../../controller/campeonato/JoinChampionshipController.js";
+import { DeleteTeamChampionshipController } from "../../controller/campeonato/DeleteTeamChampionshipController.js";
 
 const router = Router();
 
 //Criar campeonato
 router.post("/", auth, new CreateChampionshipController().handle);
+
+//Entrar no campeonato
+router.post("/:campeonatoId/time/:timeId", auth, new JoinChampionshipController().handle)
+
+//Sair do campeonato
+router.delete("/:campeonatoId/time/:timeId", auth, new DeleteTeamChampionshipController().handle)
 
 //Deletar campeonato
 router.delete("/:id", auth, new DeleteChampionshipController().handle);

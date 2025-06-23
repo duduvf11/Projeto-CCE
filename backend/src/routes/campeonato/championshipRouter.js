@@ -23,6 +23,9 @@ router.put("/:id", auth, new UpdateChampionshipController().handle);
 //Listar campeonatos finalizados
 router.get("/finished", new ListFinishedChampionshipsController().handle);
 
+//Listar campeonato
+router.get("/:id", new GetChampionshipController().handle)
+
 //Listar campeonatos em andamento
 router.get("/ongoing", new ListOngoingChampionshipsController().handle);
 

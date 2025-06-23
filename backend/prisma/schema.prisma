@@ -71,8 +71,8 @@ model Campeonato {
   nome         String
   dataInicio   DateTime
   dataFim      DateTime
-  descricao    String
-  premio       Float
+  descricao    String?
+  premio       Float?
   formato      Formato
   numeroTimes  Int
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { auth } from "../../middlewares/auth.js";
+import { auth } from "../../middlewares/Auth.js";
 
 import { CreateTeam } from "../../controller/times/CreateTeamController.js";
 import { GetTeamController } from "../../controller/times/GetTeamsController.js";

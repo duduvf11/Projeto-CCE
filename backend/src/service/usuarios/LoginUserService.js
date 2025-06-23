@@ -30,8 +30,7 @@ class LoginUserService{
 
     return {
       id: userId,
-      nome: user.nome,
-      email: user.email,
+      admin: user.admin,
       token: token
     }
   }

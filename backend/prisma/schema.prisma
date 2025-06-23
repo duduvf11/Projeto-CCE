@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  nome String
+  email String
+  senha String
+  admin Boolean
+  dataNascimento DateTime
+
+  @@map("users")
+
+  campeonato Campeonato[]
+  times Time[]
+}
+
+model Time{
+  id Int @id @default(autoincrement())
+  nome String
+  usuario Int
+  
+  user User @relation(fields: [usuario], references: [id])
+
+  jogadores Jogador[]
+  campeonatoTime CampeonatoTime[]
+
+  @@map("times")
+}
+
+enum Genero{
+  MASCULINO
+  FEMININO
+}
+
+model Jogador{
+  id Int @id @default(autoincrement())
+  nome String
+  numeroCamisa Int
+  idTime Int
+  genero Genero
+  altura Float
+
+  time Time @relation(fields: [idTime], references: [id])
+
+  @@map("jogadores")
+}
+
+enum Formato{
+  MATA_MATA
+  GRUPO
+  MATA_MATA_CHAVEAMENTO
+  SUICO
+}
+
+model Campeonato {
+  id           Int       @id @default(autoincrement())
+  usuarioId    Int
+  nome         String
+  dataInicio   DateTime
+  dataFim      DateTime
+  descricao    String?
+  premio       Float?
+  formato      Formato
+  numeroTimes  Int
+
+  usuario      User       @relation(fields: [usuarioId], references: [id])
+  times        CampeonatoTime[]
+
+  @@map("campeonatos")
+}
+
+model CampeonatoTime {
+  id            Int @id @default(autoincrement())
+  campeonatoId  Int
+  timeId        Int
+
+  campeonato    Campeonato @relation(fields: [campeonatoId], references: [id])
+  time          Time       @relation(fields: [timeId], references: [id])
+
+  @@map("campeonato_time")
+}
+

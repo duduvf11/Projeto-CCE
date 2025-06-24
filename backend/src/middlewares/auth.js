@@ -3,11 +3,13 @@ const {verify} = jwt
 
 export function auth(req, res, next){
 
-  const authToken = req.headers.authorization
+  const authToken = req.headers.authorization || req.cookies.token
 
   if (!authToken) return res.status(401).end()
 
-  const [, token] = authToken.split(" ")
+  const token = authToken.startsWith?.("Bearer ")
+    ? authToken.split(" ")[1]
+    : authToken;
 
   try{
 
@@ -21,6 +23,6 @@ export function auth(req, res, next){
   return next()
 
   }catch{
-    return res.stauts(401).end()
+    return res.status(401).end()
   }
 }

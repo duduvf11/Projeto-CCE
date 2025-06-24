@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import Card from '../../components/Card';
+import api from '../../services/api';
 
 export default function CriarCampeonato() {
   const [etapa, setEtapa] = useState(0);
   const [campeonato, setCampeonato] = useState({
+    id: null,
     nome: '',
     descricao: '',
     dataInicio: '',
     dataFim: '',
-    premiacao: '',
+    premio: '',
     formato: '',
     numeroTimes: '',
   });
@@ -26,9 +28,9 @@ export default function CriarCampeonato() {
     campeonato.descricao &&
     campeonato.dataInicio &&
     campeonato.dataFim &&
-    campeonato.premiacao;
+    campeonato.premio;
 
-  const formatos = ['Mata-mata', 'Mata-mata com chaveamento', 'Grupos'];
+  const formatos = ["MATA_MATA", "GRUPO", "MATA_MATA_CHAVEAMENTO"];
   const numerosTimes = ['8', '16', '32'];
 
   const abrirPopup = () => {
@@ -36,24 +38,38 @@ export default function CriarCampeonato() {
     setModoEdicao(false);
   };
 
-  const avancarEtapa = () => {
+  const avancarEtapa = async () => {
     if (etapa === 3) {
-      if (modoEdicao) {
-        setCampeonatoSalvo(campeonato);
+      try {
+        let response;
+        if (modoEdicao) {
+          response = await api.put(`/championship/${campeonato.id}`, campeonato);
+          setModoEdicao(false);
+        } else {
+          response = await api.post('/championship', campeonato);
+          setSucesso(true);
+        }
+        setCampeonatoSalvo(response.data);
         setEtapa(0);
-        setModoEdicao(false);
-      } else {
-        setCampeonatoSalvo(campeonato);
-        setSucesso(true);
-        setEtapa(0);
+      } catch (error) {
+        console.error('Erro ao salvar campeonato:', error);
+        alert('Erro ao salvar o campeonato. Verifique os dados ou o login.');
       }
     } else {
       setEtapa(etapa + 1);
     }
   };
 
-  const removerCampeonato = () => {
-    setCampeonatoSalvo(null);
+  const removerCampeonato = async () => {
+    if (campeonatoSalvo?.id) {
+      try {
+        await api.delete(`/championship/${campeonatoSalvo.id}`);
+        setCampeonatoSalvo(null);
+      } catch (error) {
+        console.error('Erro ao remover:', error);
+        alert('Erro ao remover o campeonato.');
+      }
+    }
   };
 
   const editarCampeonato = () => {
@@ -71,28 +87,20 @@ export default function CriarCampeonato() {
         Novo Campeonato
       </button>
 
-      {/* Mostrar campeonato salvo */}
       {campeonatoSalvo && (
-        <div className=" flex align-center justify-between items-center w-full max-w-4/5 bg-gray-100 p-6 rounded-xl shadow mb-4">
+        <div className="flex align-center justify-between items-center w-full max-w-4/5 bg-gray-100 p-6 rounded-xl shadow mb-4">
           <h3 className="text-xl font-bold">{campeonatoSalvo.nome}</h3>
           <div className="flex items-center mr-2 gap-2">
-            <button
-              onClick={editarCampeonato}
-              className="text-white rounded cursor-pointer"
-            >
+            <button onClick={editarCampeonato}>
               <img src="../src/assets/edit_Pen.svg" alt="Editar" />
             </button>
-            <button
-              onClick={removerCampeonato}
-              className="text-white rounded cursor-pointer"
-            >
+            <button onClick={removerCampeonato}>
               <img src="../src/assets/delete.svg" alt="Remover" />
             </button>
           </div>
         </div>
       )}
 
-      {/* Popup principal com etapas */}
       {etapa > 0 && (
         <div className="fixed inset-0 bg-[rgba(58,58,58,0.5)] flex items-center justify-center z-10 p-4">
           <Card title={modoEdicao ? "Editar Campeonato" : "Criação de Campeonato"}>
@@ -130,9 +138,9 @@ export default function CriarCampeonato() {
                 />
                 <input
                   type="text"
-                  name="premiacao"
+                  name="premio"
                   placeholder="Premiação"
-                  value={campeonato.premiacao}
+                  value={campeonato.premio}
                   onChange={handleChange}
                   className="w-full p-2 mb-4 border rounded"
                 />
@@ -213,7 +221,6 @@ export default function CriarCampeonato() {
         </div>
       )}
 
-      {/* Sucesso */}
       {sucesso && (
         <div className="fixed inset-0 bg-[rgba(58,58,58,0.5)] flex items-center justify-center z-20">
           <div className="bg-green-100 text-green-800 p-6 rounded-xl shadow-lg text-center w-[400px]">
@@ -222,11 +229,12 @@ export default function CriarCampeonato() {
               onClick={() => {
                 setSucesso(false);
                 setCampeonato({
+                  id: null,
                   nome: '',
                   descricao: '',
                   dataInicio: '',
                   dataFim: '',
-                  premiacao: '',
+                  premio: '',
                   formato: '',
                   numeroTimes: '',
                 });

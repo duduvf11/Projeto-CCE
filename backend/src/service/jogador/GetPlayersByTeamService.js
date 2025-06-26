@@ -29,7 +29,9 @@ class GetPlayersByTeamService {
         }, select: {
           id: true,
           numeroCamisa: true,
-          nome: true
+          nome: true,
+          genero: true,
+          altura: true,
         }
       });
 

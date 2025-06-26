@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../../components/Card';
 import api from '../../services/api';
+import { Link } from 'react-router-dom';
 
 export default function CriarCampeonato() {
   // Estados principais
@@ -26,7 +27,6 @@ export default function CriarCampeonato() {
   const formatos = [
     { valor: "MATA_MATA", nome: "Mata-Mata" },
     { valor: "GRUPO", nome: "Grupo" },
-    { valor: "MATA_MATA_CHAVEAMENTO", nome: "Mata-Mata com Chaveamento" }
   ];
 
   const numerosTimes = ['8', '16', '32'];
@@ -173,7 +173,7 @@ export default function CriarCampeonato() {
       </button>
 
       {/* Lista de campeonatos */}
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-5xl">
         {listaCampeonatos.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-gray-500 text-lg">Nenhum campeonato criado ainda</p>
@@ -188,9 +188,9 @@ export default function CriarCampeonato() {
           listaCampeonatos.map((camp) => (
             <div
               key={camp.id}
-              className="flex flex-col md:flex-row justify-between items-start md:items-center w-full bg-gray-50 p-6 rounded-xl shadow mb-4 border border-gray-200 hover:shadow-md transition-shadow"
+              className="flex flex-col justify-between md:flex-row items-start md:items-center w-full bg-gray-50 p-6 rounded-xl shadow mb-4 border border-gray-200 hover:shadow-md transition-shadow"
             >
-              <div className="w-full md:w-3/4">
+              <div className="h-1/3 w-1/3 md:w-2/3">
                 <h3 className="text-xl font-bold text-gray-800">{camp.nome}</h3>
                 <p className="text-gray-600 mt-1">{camp.descricao}</p>
                 <div className="flex flex-wrap gap-4 mt-3">
@@ -209,6 +209,9 @@ export default function CriarCampeonato() {
                 </div>
               </div>
               <div className="flex items-center mt-4 md:mt-0 gap-3">
+                <Link to={`/ver-campeonato/${camp.id}`} className="flex items-center justify-center p-2 pr-4 pl-4 rounded-lg text-white font-bold bg-[var(--verde-claro)] hover:bg-[var(--verde)] transition-colors" title="Visualizar">
+                  Ver Campeonato
+                </Link>
                 <button 
                   onClick={() => editarCampeonato(camp)}
                   className="flex items-center justify-center p-2 rounded-lg hover:bg-blue-200 transition-colors"

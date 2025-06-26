@@ -1,35 +1,68 @@
-import React, { useState } from 'react';
-//import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Card from '../../components/Card';
+import api from '../../services/api';
 
 export default function CadastroReservas() {
-  //const location = useLocation();
-  //const timeId = location.state?.timeId;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const timeId = location.state?.timeId;
   const [reservas, setReservas] = useState([]);
   const [popupAberto, setPopupAberto] = useState(false);
   const [reservaAtual, setReservaAtual] = useState({
     nome: '',
     genero: '',
     altura: '',
-    numero: '',
-    idade: '',
+    numeroCamisa: '',
   });
-  const [editandoIndex, setEditandoIndex] = useState(null);
+  const [editandoId, setEditandoId] = useState(null);
+  const [reservaExpandida, setReservaExpandida] = useState(null);
 
-  const abrirPopup = (index = null) => {
-    if (index !== null) {
-      setReservaAtual(reservas[index]);
-      setEditandoIndex(index);
+  const carregarReservas = useCallback(async () => {
+    try {
+      const response = await api.get(`/player/time/${timeId}`);
+      setReservas(response.data);
+    } catch (error) {
+      console.error('Erro ao carregar reservas:', error);
+    }
+  }, [timeId]);
+
+  useEffect(() => {
+    if (timeId) {
+      carregarReservas();
+    }
+  }, [timeId, carregarReservas]);
+
+  const abrirPopup = (reserva = null) => {
+    if (reserva) {
+      setReservaAtual({
+        nome: reserva.nome || '',
+        genero: reserva.genero || '',
+        altura: reserva.altura ? reserva.altura.toString() : '',
+        numeroCamisa: reserva.numeroCamisa ? reserva.numeroCamisa.toString() : '',
+      });
+      setEditandoId(reserva.id);
     } else {
-      setReservaAtual({ nome: '', genero: '', altura: '', numero: '', idade: '' });
-      setEditandoIndex(null);
+      setReservaAtual({
+        nome: '',
+        genero: '',
+        altura: '',
+        numeroCamisa: '',
+      });
+      setEditandoId(null);
     }
     setPopupAberto(true);
   };
 
   const fecharPopup = () => {
     setPopupAberto(false);
-    setReservaAtual({ nome: '', genero: '', altura: '', numero: '', idade: '' });
-    setEditandoIndex(null);
+    setReservaAtual({
+      nome: '',
+      genero: '',
+      altura: '',
+      numeroCamisa: '',
+    });
+    setEditandoId(null);
   };
 
   const handleChange = (e) => {
@@ -37,145 +70,222 @@ export default function CadastroReservas() {
     setReservaAtual((prev) => ({ ...prev, [name]: value }));
   };
 
-  const salvarReserva = () => {
-    if (editandoIndex !== null) {
-      const atualizados = [...reservas];
-      atualizados[editandoIndex] = reservaAtual;
-      setReservas(atualizados);
-    } else {
-      setReservas((prev) => [...prev, reservaAtual]);
+  const salvarReserva = async () => {
+    try {
+      const reservaData = {
+        nome: reservaAtual.nome,
+        numeroCamisa: parseInt(reservaAtual.numeroCamisa) || 0,
+        genero: reservaAtual.genero,
+        altura: parseFloat(reservaAtual.altura) || 0
+      };
+
+      if (editandoId) {
+        await api.put(`/player/${editandoId}`, reservaData);
+      } else {
+        await api.post(`/player/time/${timeId}`, reservaData);
+      }
+
+      await carregarReservas();
+      fecharPopup();
+    } catch (error) {
+      console.error('Erro ao salvar reserva:', error.response?.data || error.message);
+      alert(`Erro ao salvar reserva: ${error.response?.data?.message || 'Verifique os dados e tente novamente'}`);
     }
-    fecharPopup();
   };
 
-  const excluirReserva = (index) => {
-    const atualizados = reservas.filter((_, i) => i !== index);
-    setReservas(atualizados);
+  const excluirReserva = async (id) => {
+    if (window.confirm('Tem certeza que deseja excluir esta reserva?')) {
+      try {
+        await api.delete(`/player/${id}`);
+        await carregarReservas();
+      } catch (error) {
+        console.error('Erro ao excluir reserva:', error);
+        alert('Erro ao excluir reserva. Tente novamente.');
+      }
+    }
   };
 
-  const camposPreenchidos = Object.values(reservaAtual).every((v) => v !== '');
+  const toggleExpandirReserva = (id) => {
+    setReservaExpandida(reservaExpandida === id ? null : id);
+  };
+
+  const camposPreenchidos = reservaAtual.nome && reservaAtual.genero && reservaAtual.altura && reservaAtual.numeroCamisa;
 
   return (
     <div className="flex flex-col items-center bg-white rounded-xl shadow-md max-w-4/5 w-full min-h-7/8 md:max-h-screen m-20">
+      {/* Cabeçalho */}
       <div className='w-full bg-[var(--verde-piscina)] text-white p-4 rounded-t-xl flex justify-between items-center mb-4'>
         <button
-              className="flex items-center text-[var(--cinza-claro)] hover:text-white text-sm"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Voltar
-            </button>
+          onClick={() => navigate(-1)}
+          className="flex items-center text-[var(--cinza-claro)] hover:text-white text-sm"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Voltar
+        </button>
         <h1 className="text-center font-bold text-4xl pr-20">JOGADORES RESERVAS</h1>
         <div></div>
       </div>
 
+      {/* Botão de adicionar */}
       <div className="flex justify-center mb-4">
         <button
           onClick={() => abrirPopup()}
           className="bg-lime-600 text-white px-6 py-2 rounded hover:bg-lime-700"
         >
-          Criar Novo Jogador Reserva
+          Adicionar Reserva
         </button>
       </div>
 
-      <div className="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow">
+      {/* Lista de reservas */}
+      <div className="max-w-3xl mx-auto bg-white p-4 rounded-xl shadow w-full">
         {reservas.length === 0 ? (
-          <p className="text-center text-gray-500">Nenhum jogador reserva cadastrado.</p>
+          <p className="text-center text-gray-500">Nenhuma reserva cadastrada.</p>
         ) : (
-          <ul>
-            {reservas.map((reserva, index) => (
-              <li key={index} className="flex justify-between items-center border-b py-2">
-                <span>
-                  {reserva.nome} — Camisa {reserva.numero} — {reserva.genero}, {reserva.idade} anos, {reserva.altura}m
-                </span>
-                <div className="space-x-2">
+          <ul className="space-y-2">
+            {reservas.map((reserva) => (
+              <li key={reserva.id} className="border border-gray-300 rounded-lg overflow-hidden">
+                <div className="flex justify-between items-center p-4 bg-[var(--verde)] text-white cursor-pointer transition-colors">
                   <button
-                    onClick={() => abrirPopup(index)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                    onClick={() => toggleExpandirReserva(reserva.id)}
+                    className="flex-1 text-left"
                   >
-                    Editar
+                    <span className="font-medium">
+                      <span className='bg-[var(--verde-piscina-escuro)] text-bold rounded-xl pr-2 pl-2 pt-1 pb-1'>{reserva.numeroCamisa}</span> <span className="font-bold">{reserva.nome}</span>
+                    </span>
                   </button>
-                  <button
-                    onClick={() => excluirReserva(index)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    Excluir
-                  </button>
+                  <div className="space-x-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        abrirPopup(reserva);
+                      }}
+                      className="text-white px-3 py-1 rounded hover:bg-blue-600 text-sm"
+                    >
+                      <img src="../src/assets/edit_Pen_white.svg" alt="Editar" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        excluirReserva(reserva.id);
+                      }}
+                      className="text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+                    >
+                      <img src="../src/assets/delete_white.svg" alt="Excluir" />
+                    </button>
+                  </div>
                 </div>
+                
+                {reservaExpandida === reserva.id && (
+                  <div className="p-4 bg-white border-t">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-gray-600">Gênero:</p>
+                        <p className="font-medium">{reserva.genero}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">Altura:</p>
+                        <p className="font-medium">{reserva.altura}m</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
         )}
         <p className="text-sm text-right mt-2 text-gray-600">
-          {reservas.length}/22 jogadores reservas criados
+          {reservas.length} reservas cadastradas
         </p>
       </div>
 
+      {/* Modal de cadastro */}
       {popupAberto && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-[400px]">
-            <h2 className="text-xl font-bold text-center mb-4">Cadastro de Jogador Reserva</h2>
-            <input
-              type="text"
-              name="nome"
-              placeholder="Nome do jogador"
-              value={reservaAtual.nome}
-              onChange={handleChange}
-              className="w-full p-2 mb-2 border rounded"
-            />
-            <input
-              type="text"
-              name="genero"
-              placeholder="Gênero"
-              value={reservaAtual.genero}
-              onChange={handleChange}
-              className="w-full p-2 mb-2 border rounded"
-            />
-            <input
-              type="number"
-              name="altura"
-              placeholder="Altura (em metros)"
-              value={reservaAtual.altura}
-              onChange={handleChange}
-              className="w-full p-2 mb-2 border rounded"
-            />
-            <input
-              type="number"
-              name="numero"
-              placeholder="Número da camiseta"
-              value={reservaAtual.numero}
-              onChange={handleChange}
-              className="w-full p-2 mb-2 border rounded"
-            />
-            <input
-              type="number"
-              name="idade"
-              placeholder="Idade"
-              value={reservaAtual.idade}
-              onChange={handleChange}
-              className="w-full p-2 mb-4 border rounded"
-            />
-            <div className="flex justify-between">
-              <button
-                onClick={fecharPopup}
-                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={salvarReserva}
-                disabled={!camposPreenchidos}
-                className={`px-4 py-2 rounded text-white ${
-                  camposPreenchidos
-                    ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-gray-400 cursor-not-allowed'
-                }`}
-              >
-                {editandoIndex !== null ? 'Salvar' : 'Cadastrar'}
-              </button>
+        <div className="fixed inset-0 bg-[rgba(58,58,58,0.7)] flex items-center justify-center z-10 p-4">
+          <Card 
+            title={editandoId ? "Editar Reserva" : "Cadastrar Reserva"}
+            backButtonVariant="close"
+            onBackClick={fecharPopup}
+          >
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="nome-reserva" className="block text-gray-700 mb-1">Nome</label>
+                <input
+                  id="nome-reserva"
+                  type="text"
+                  name="nome"
+                  placeholder="Nome completo"
+                  value={reservaAtual.nome}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="numero-reserva" className="block text-gray-700 mb-1">Número da Camisa</label>
+                <input
+                  id="numero-reserva"
+                  type="number"
+                  name="numeroCamisa"
+                  placeholder="Número"
+                  value={reservaAtual.numeroCamisa}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="genero-reserva" className="block text-gray-700 mb-1">Gênero</label>
+                <select
+                  id="genero-reserva"
+                  name="genero"
+                  value={reservaAtual.genero}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                >
+                  <option value="">Selecione</option>
+                  <option value="MASCULINO">Masculino</option>
+                  <option value="FEMININO">Feminino</option>
+                  <option value="OUTRO">Outro</option>
+                </select>
+              </div>
+              
+              <div>
+                <label htmlFor="altura-reserva" className="block text-gray-700 mb-1">Altura (metros)</label>
+                <input
+                  id="altura-reserva"
+                  type="number"
+                  step="0.01"
+                  name="altura"
+                  placeholder="1.75"
+                  value={reservaAtual.altura}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+              </div>
+              
+              <div className="flex justify-end gap-3 pt-2">
+                <button
+                  onClick={fecharPopup}
+                  className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={salvarReserva}
+                  disabled={!camposPreenchidos}
+                  className={`px-4 py-2 rounded-lg text-white ${
+                    camposPreenchidos
+                      ? 'bg-green-600 hover:bg-green-700'
+                      : 'bg-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  {editandoId ? 'Salvar' : 'Cadastrar'}
+                </button>
+              </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

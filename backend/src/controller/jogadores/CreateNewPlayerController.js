@@ -8,8 +8,8 @@ class CreateNewPlayerController {
       const { timeId } = req.params;
       const { nome, numeroCamisa, genero, altura } = req.body;
 
-      if (!["MASCULINO", "FEMININO"].includes(genero)) {
-        return res.status(400).json({ error: "Gênero inválido. Use 'MASCULINO' ou 'FEMININO'." });
+      if (!["MASCULINO", "FEMININO", "OUTRO"].includes(genero)) {
+        return res.status(400).json({ error: "Gênero inválido. Use 'MASCULINO', 'FEMININO' ou 'OUTRO'." });
       }
 
       const createNewPlayerService = new CreateNewPlayerService();

@@ -12,7 +12,8 @@ export function AuthProvider({ children }) {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setUser({ nome: decoded.nome }); 
+        // Ajeitando para extrair o ID do token decodificado
+        setUser({ nome: decoded.nome, id: decoded.id }); 
       } catch (err) {
         console.error('Erro ao decodificar token:', err);
         setUser(null);
@@ -25,7 +26,8 @@ export function AuthProvider({ children }) {
   const login = useCallback((token) => {
     setCookie('token', token, { path: '/' }); 
     const decoded = jwtDecode(token);
-    setUser({ nome: decoded.nome }); 
+    // Ajeitando para extrair o ID do token decodificado
+    setUser({ nome: decoded.nome, id: decoded.id }); 
   }, [setCookie]);
 
   const logout = useCallback(() => {

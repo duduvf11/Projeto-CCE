@@ -146,7 +146,7 @@ export default function CadastroJogadores() {
           <ul className="space-y-2">
             {jogadores.map((jogador) => (
               <li key={jogador.id} className="border border-gray-300 rounded-lg overflow-hidden">
-                <div className="flex justify-between items-center p-4 bg-[var(--verde)] text-white cursor-pointer transition-colors">
+                <div className="flex justify-between items-center p-2 bg-[var(--verde)] text-white cursor-pointer transition-colors">
                   <button
                     onClick={() => toggleExpandirJogador(jogador.id)}
                     className="flex-1 text-left"
@@ -196,7 +196,7 @@ export default function CadastroJogadores() {
           </ul>
         )}
         <p className="text-sm text-right mt-2 text-gray-600">
-          {jogadores.length} jogadores cadastrados
+          {jogadores.length}/11 jogadores cadastrados
         </p>
       </div>
 

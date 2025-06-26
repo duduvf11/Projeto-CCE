@@ -1,112 +1,151 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { Loader2, ShieldX, Frown } from 'lucide-react';
+import api from '../../services/api';
+import { AuthContext } from '../../contexts/AuthContext';
 
 export default function CampeonatosInscritos() {
+  const { user } = useContext(AuthContext);
   const [inscricoes, setInscricoes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [inscricaoParaExcluir, setInscricaoParaExcluir] = useState(null);
-  const [popupConfirmacao, setPopupConfirmacao] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const fetchInscricoes = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      // Rota para buscar os campeonatos em que o usuário logado está inscrito
+      const response = await api.get('/championship/user'); 
+      setInscricoes(response.data);
+    } catch (err) {
+      console.error('Erro ao buscar inscrições:', err);
+      setError('Não foi possível carregar suas inscrições.');
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
-    fetch('/api/campeonatos/inscritos')
-      .then(res => res.json())
-      .then(data => setInscricoes(data));
-  }, []);
+    fetchInscricoes();
+  }, [fetchInscricoes]);
 
-  const confirmarExclusao = (inscricao) => {
+  const abrirPopupConfirmacao = (inscricao) => {
     setInscricaoParaExcluir(inscricao);
-    setPopupConfirmacao(true);
+    setIsPopupOpen(true);
   };
 
-  const cancelarExclusao = () => {
+  const fecharPopup = () => {
     setInscricaoParaExcluir(null);
-    setPopupConfirmacao(false);
+    setIsPopupOpen(false);
   };
 
-  const excluirInscricao = async () => {
+  const handleExcluirInscricao = async () => {
     if (!inscricaoParaExcluir) return;
 
     try {
-      const res = await fetch(`/api/campeonatos/desinscrever`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          campeonatoId: inscricaoParaExcluir.campeonatoId,
-          timeId: inscricaoParaExcluir.timeId,
-        }),
-      });
-
-      if (res.ok) {
-        setInscricoes((prev) => 
-          prev.filter(i => i.campeonatoId !== inscricaoParaExcluir.campeonatoId || i.timeId !== inscricaoParaExcluir.timeId)
-        );
-      } else {
-        const errorData = await res.json();
-        alert(`Erro ao remover inscrição: ${errorData.message}`);
-      }
-
-    } catch (error) {
-      // O erro estava sendo ignorado aqui. Agora, ele é usado para exibir a mensagem completa.
-      console.error("Erro ao tentar remover a inscrição:", error);
-      alert("Erro ao tentar remover a inscrição. Veja o console para mais detalhes.");
+      const { campeonato, time } = inscricaoParaExcluir;
+      // Rota correta para desinscrever um time de um campeonato
+      await api.delete(`/championship/${campeonato.id}/time/${time.id}`);
+      
+      setInscricoes(prev => 
+        prev.filter(i => !(i.campeonato.id === campeonato.id && i.time.id === time.id))
+      );
+      
+      fecharPopup();
+    } catch (err) {
+      console.error("Erro ao tentar remover a inscrição:", err);
+      const errorMessage = err.response?.data?.error || "Ocorreu um erro."
+      alert(`Não foi possível remover a inscrição: ${errorMessage}`);
+      fecharPopup();
     }
-
-    setInscricaoParaExcluir(null);
-    setPopupConfirmacao(false);
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <Loader2 className="animate-spin text-gray-600" size={40} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-100 text-red-600">
+        <Frown size={50} />
+        <p className="mt-4 text-lg">{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-100 to-blue-100 p-6">
-      <h1 className="text-2xl font-bold mb-6 text-center text-green-900">Meus Campeonatos</h1>
+    <div className="p-4 md:p-8 bg-gray-100 min-h-screen">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Minhas Inscrições</h1>
 
-      {inscricoes.length === 0 ? (
-        <p className="text-center text-gray-500">Você não está inscrito em nenhum campeonato.</p>
-      ) : (
-        <div className="bg-white rounded-lg p-4 shadow max-w-3xl mx-auto">
-          {inscricoes.map((inscricao) => (
-            <div key={`${inscricao.campeonatoId}-${inscricao.timeId}`} className="flex justify-between items-center border-b py-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🏆</span>
-                <p className="font-semibold">{inscricao.campeonato.nome} <span className="text-gray-500">com o time {inscricao.time.nome}</span></p>
+        {inscricoes.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-lg shadow-md">
+            <p className="text-gray-500 text-lg">Você não está inscrito em nenhum campeonato.</p>
+            <Link to="/" className="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              Ver Campeonatos
+            </Link>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-md p-2 sm:p-4">
+            {inscricoes.map((inscricao) => (
+              <div 
+                key={`${inscricao.campeonato.id}-${inscricao.time.id}`} 
+                className="flex flex-col sm:flex-row justify-between items-center border-b p-4 hover:bg-gray-50 transition-colors"
+              >
+                <div className="mb-4 sm:mb-0">
+                  <p className="font-semibold text-lg text-gray-800">{inscricao.campeonato.nome}</p>
+                  <p className="text-gray-600">Inscrito com o time: <span className="font-medium">{inscricao.time.nome}</span></p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to={`/campeonato/${inscricao.campeonato.id}`}
+                    className="bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Ver Página
+                  </Link>
+                  <button
+                    onClick={() => abrirPopupConfirmacao(inscricao)}
+                    className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors"
+                    title="Cancelar Inscrição"
+                  >
+                    <ShieldX size={18} />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => alert('Ver campeonato ainda não implementado')}
-                  className="bg-lime-600 text-white text-sm px-3 py-1 rounded hover:bg-lime-700"
-                >
-                  Ver Campeonato
-                </button>
-                <button
-                  onClick={() => confirmarExclusao(inscricao)}
-                  className="text-red-600 hover:underline text-sm"
-                >
-                  ❌
-                </button>
-              </div>
-            </div>
-          ))}
-          <p className="text-sm text-right mt-2 text-gray-600">
-            {inscricoes.length} inscrição(ões)
-          </p>
-        </div>
-      )}
+            ))}
+            <p className="text-sm text-right mt-4 pr-4 text-gray-500">
+              {inscricoes.length} inscrição(ões) no total
+            </p>
+          </div>
+        )}
+      </div>
 
-      {popupConfirmacao && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
-          <div className="bg-white rounded-lg p-6 w-[400px] shadow-lg border-t-8 border-lime-600">
-            <p className="text-lg font-semibold text-center mb-4">Você tem certeza que deseja remover a inscrição?</p>
+      {isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-4 shadow-xl">
+            <h3 className="text-lg font-bold text-center mb-2 text-gray-800">Cancelar Inscrição</h3>
+            <p className="text-center text-gray-600 mb-6">
+              Tem certeza que quer remover o time <span className="font-bold">{inscricaoParaExcluir?.time.nome}</span> do campeonato <span className="font-bold">{inscricaoParaExcluir?.campeonato.nome}</span>?
+            </p>
             <div className="flex justify-center gap-4">
               <button
-                onClick={excluirInscricao}
-                className="bg-lime-600 text-white px-4 py-2 rounded hover:bg-lime-700"
+                onClick={handleExcluirInscricao}
+                className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 font-semibold transition-colors"
               >
-                SIM
+                Sim, remover
               </button>
               <button
-                onClick={cancelarExclusao}
-                className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+                onClick={fecharPopup}
+                className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 font-semibold transition-colors"
               >
-                NÃO
+                Não
               </button>
             </div>
           </div>

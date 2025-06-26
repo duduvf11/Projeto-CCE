@@ -137,7 +137,6 @@ const PlayerSelectionModalContent = ({ players, onSelectPlayer }) => (
 );
 
 const MODAL_CONFIGS = {
-    foul: { title: 'ADICIONAR FALTA' }, substitution: { title: 'FAZER SUBSTITUIÇÃO' },
     impediment: { title: 'ADICIONAR IMPEDIMENTO' }, corner: { title: 'ADICIONAR ESCANTEIO' },
     yellowCard: { title: 'ADICIONAR CARTÃO AMARELO' }, redCard: { title: 'ADICIONAR CARTÃO VERMELHO' },
 };
@@ -154,15 +153,8 @@ export default function ControlePartida() {
   const [events, setEvents] = useState([]);
   const [modal, setModal] = useState({ type: null, data: null });
   
-  // Efeito para buscar os dados da partida quando a página carregar
   useEffect(() => {
     console.log("Buscando dados para a partida com ID:", partidaId);
-    // TODO:
-    // 1. FAÇA UMA CHAMADA À SUA API AQUI USANDO O `partidaId`
-    // 2. Exemplo: fetch(`/api/partidas/${partidaId}`).then(...)
-    // 3. Atualize os estados com os dados retornados: setPartida, setScore, setEvents, etc.
-
-    // Por enquanto, usamos dados mockados
     setPartida({ id: partidaId, name: `Campeonato Brasileiro - Partida ${partidaId}`});
     setScore({a: 1, b: 0}); // Placar inicial de exemplo
     setEvents([{id: 1, type: 'goal', team: 'A', player: {id: 2, name: 'Zagueiro A', number: 4 }, time: '01:12'}]);
@@ -255,7 +247,6 @@ export default function ControlePartida() {
                  </button>
                   <TeamActions 
                     teamName="A" 
-                    onAddFoul={() => openModalForTeam('foul', 'A')}
                     onAddImpediment={() => openModalForTeam('impediment', 'A')}
                     onAddCorner={() => openModalForTeam('corner', 'A')}
                     onAddYellowCard={() => openModalForTeam('yellowCard', 'A')}
@@ -274,7 +265,6 @@ export default function ControlePartida() {
                 </button>
                 <TeamActions 
                     teamName="B" 
-                    onAddFoul={() => openModalForTeam('foul', 'B')}
                     onAddImpediment={() => openModalForTeam('impediment', 'B')}
                     onAddCorner={() => openModalForTeam('corner', 'B')}
                     onAddYellowCard={() => openModalForTeam('yellowCard', 'B')}

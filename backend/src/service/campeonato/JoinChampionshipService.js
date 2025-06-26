@@ -16,7 +16,7 @@ class JoinChampionshipService {
         throw new Error("Time não encontrado.");
       }
 
-      if (time.usuarioId !== usuarioId) {
+      if (time.usuario !== usuarioId) {
         throw new Error("Você não é o proprietário deste time.");
       }
 

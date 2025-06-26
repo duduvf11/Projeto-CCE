@@ -21,12 +21,9 @@ function Sidebar() {
           <Link to="/partida/123" className="hover:underline">Controle Jogo</Link>
         </li>
 
-        {/* Link adicionado para testar a tela VerCampeonato */}
-        <li>
-          <Link to="/campeonato/suico-tabela" className="hover:underline">Ver Camp.</Link>
-        </li>
-
       </ul>
     </div>
   )
 }
+
+export default Sidebar

@@ -5,7 +5,7 @@ import { GenerateGameService } from "../../service/jogos/GenerateGameService.js"
 class GenerateGameController {
   async handle(req, res) {
     try {
-      const usuarioId = 2 //parseInt(req.user_id);
+      const usuarioId = 2
       const { campeonatoId } = req.params;
       const parsedCampeonatoId = parseInt(campeonatoId);
 
@@ -17,7 +17,6 @@ class GenerateGameController {
 
       const generatedGames = await generateGamesService.execute({
         usuarioId,
-        campeonatoId: parsedCampeonatoId,
       });
 
       return res.status(201).json({

@@ -36,7 +36,9 @@ model Time{
 
   jogadores Jogador[]
   campeonatoTime CampeonatoTime[]
-  jogos Jogo[]
+
+  jogosComoTimeA   Jogo[] @relation("TimeAForJogo")
+  jogosComoTimeB   Jogo[] @relation("TimeBForJogo")
 
   @@map("times")
 }
@@ -118,7 +120,8 @@ model Jogo {
   estatisticaAId  Int?
   estatisticaBId  Int? 
 
-  time Time? @relation(fields: [timeA], references: [id])
+  timeAId           Time?              @relation("TimeAForJogo", fields: [timeA], references: [id])
+  timeBId           Time?              @relation("TimeBForJogo", fields: [timeB], references: [id])
 
   estatisticaA    Estatistica? @relation("GameStatsA", fields: [estatisticaAId], references: [id])
   estatisticaB    Estatistica? @relation("GameStatsB", fields: [estatisticaBId], references: [id])

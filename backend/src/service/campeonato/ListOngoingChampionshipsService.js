@@ -14,7 +14,10 @@ class ListOngoingChampionshipsService {
         },
         select: {
           id: true,
-          nome: true
+          nome: true,
+          dataInicio: true,
+          formato: true,
+          numeroTimes: true
         },
         orderBy: {
           dataInicio: 'asc'

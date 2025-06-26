@@ -12,6 +12,9 @@ class ListFinishedChampionshipsService {
         select: {
           id: true,
           nome: true,
+          dataInicio: true,
+          formato: true,
+          numeroTimes: true
         },
         orderBy: {
           dataFim: 'desc',

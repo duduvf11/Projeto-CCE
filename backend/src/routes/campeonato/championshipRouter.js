@@ -14,6 +14,15 @@ import { DeleteTeamChampionshipController } from "../../controller/campeonato/De
 
 const router = Router();
 
+//Listar campeonatos finalizados
+router.get("/finished", new ListFinishedChampionshipsController().handle);
+
+//Listar campeonatos em andamento
+router.get("/ongoing", new ListOngoingChampionshipsController().handle);
+
+//Listar campeonatos a começar
+router.get("/upcoming", new ListUpcomingChampionshipsController().handle);
+
 //Criar campeonato
 router.post("/", auth, new CreateChampionshipController().handle);
 
@@ -32,17 +41,6 @@ router.put("/:id", auth, new UpdateChampionshipController().handle);
 //Listar campeonatos do usuário
 router.get("/", auth, new GetUserChampionshipController().handle);
 
-//Listar campeonatos finalizados
-router.get("/finished", new ListFinishedChampionshipsController().handle);
-
-//Listar campeonato
-router.get("/:id", new GetChampionshipController().handle)
-
-//Listar campeonatos em andamento
-router.get("/ongoing", new ListOngoingChampionshipsController().handle);
-
-//Listar campeonatos a começar
-router.get("/upcoming", new ListUpcomingChampionshipsController().handle);
 
 //Mostrar um campeonato
 router.get("/:id", new GetChampionshipController().handle);

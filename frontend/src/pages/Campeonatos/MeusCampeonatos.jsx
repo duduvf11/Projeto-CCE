@@ -209,7 +209,7 @@ export default function CriarCampeonato() {
                 </div>
               </div>
               <div className="flex items-center mt-4 md:mt-0 gap-3">
-                <Link to={`/ver-campeonato/${camp.id}`} className="flex items-center justify-center p-2 pr-4 pl-4 rounded-lg text-white font-bold bg-[var(--verde-claro)] hover:bg-[var(--verde)] transition-colors" title="Visualizar">
+                <Link to={`/campeonato/${camp.id}`} className="flex items-center justify-center p-2 pr-4 pl-4 rounded-lg text-white font-bold bg-[var(--verde-claro)] hover:bg-[var(--verde)] transition-colors" title="Visualizar">
                   Ver Campeonato
                 </Link>
                 <button 

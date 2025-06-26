@@ -3,7 +3,7 @@ import prismaClient from "../../prisma/index.js";
 class DeletePlayerService {
   async execute({ id }) {
     
-    const player = await prismaClient.jogador.findUnique({
+    const player = await prismaClient.jogador.findFirst({
       where: { id }
     });
 

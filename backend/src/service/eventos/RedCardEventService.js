@@ -68,7 +68,7 @@ class RedCardEventService{
 
   }
        catch(err){
-      console.error("Erro ao adicionar cartão amarelo: " + err )
+      console.error("Erro ao adicionar cartão vermelho: " + err )
     }
   }
     

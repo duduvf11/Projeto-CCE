@@ -22,9 +22,6 @@ class RedCardEventController{
       console.error("Erro ao adicionar cartão vermelho: " + err)
 
     }
-
-    
-
   }
 }
 

@@ -11,6 +11,7 @@ import { GetChampionshipController } from "../../controller/campeonato/GetChampi
 import { GetUserChampionshipController } from "../../controller/campeonato/GetUserChampionshipController.js";
 import { JoinChampionshipController } from "../../controller/campeonato/JoinChampionshipController.js";
 import { DeleteTeamChampionshipController } from "../../controller/campeonato/DeleteTeamChampionshipController.js";
+import { GetChampionshipSubscribedController } from "../../controller/campeonato/GetChampionshipSubscribedController.js";
 
 const router = Router();
 
@@ -22,6 +23,9 @@ router.get("/ongoing", new ListOngoingChampionshipsController().handle);
 
 //Listar campeonatos a começar
 router.get("/upcoming", new ListUpcomingChampionshipsController().handle);
+
+//Listar campeonatos que o usuário está inscrito
+router.get("/subscribed", auth, new GetChampionshipSubscribedController().handle)
 
 //Criar campeonato
 router.post("/", auth, new CreateChampionshipController().handle);
@@ -40,7 +44,6 @@ router.put("/:id", auth, new UpdateChampionshipController().handle);
 
 //Listar campeonatos do usuário
 router.get("/", auth, new GetUserChampionshipController().handle);
-
 
 //Mostrar um campeonato
 router.get("/:id", new GetChampionshipController().handle);

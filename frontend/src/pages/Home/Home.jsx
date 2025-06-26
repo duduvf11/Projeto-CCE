@@ -61,7 +61,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-100 to-blue-100 p-4 md:p-6">
+    <div className="flex flex-col justify-center bg-white rounded-xl shadow-md max-w-4/5 w-full min-h-7/8 m-20 p-6">
       {/* Seção: Próximos Campeonatos */}
       <section className="mb-8">
         <h2 className="text-xl font-bold mb-4 text-green-900">Próximos Campeonatos</h2>
@@ -97,7 +97,7 @@ const Home = () => {
       </section>
 
       {/* Seção: Filtros de Campeonatos */}
-      <section>
+      <section className='bg-[var(--verde-piscina-escuro)] p-6 rounded-lg shadow-md'>
         <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
           {[
             { value: 'ongoing', label: 'Em Andamento' },

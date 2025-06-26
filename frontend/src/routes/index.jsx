@@ -6,6 +6,8 @@ import Home from '../pages/Home/Home.jsx'
 import MeusCampeonatos from '../pages/Campeonatos/MeusCampeonatos.jsx'
 import Inscritos from '../pages/Campeonatos/Inscritos.jsx'
 import MeusTimes from '../pages/Times/MeusTimes.jsx'
+import Jogadores from '../pages/Times/Jogadores.jsx'
+import Reservas from '../pages/Times/Reservas.jsx'
 
 export default function AppRoutes() {
   return (
@@ -20,6 +22,8 @@ export default function AppRoutes() {
           <Route index element={<Home />} />
           <Route path="/meus-campeonatos" element={<MeusCampeonatos />} />
           <Route path="/meus-times" element={<MeusTimes />} />
+          <Route path="/meus-times/jogadores" element={<Jogadores />} />
+          <Route path="/meus-times/reservas" element={<Reservas />} />
           <Route path="/campeonatos-inscritos" element={<Inscritos />} />
         </Route>
 

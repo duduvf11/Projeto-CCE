@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+//import { useLocation } from 'react-router-dom';
 
 export default function CadastroJogadores() {
+  //const location = useLocation();
+  //const timeId = location.state?.timeId;
   const [jogadores, setJogadores] = useState([]);
   const [popupAberto, setPopupAberto] = useState(false);
   const [jogadorAtual, setJogadorAtual] = useState({
@@ -53,8 +56,19 @@ export default function CadastroJogadores() {
   const camposPreenchidos = Object.values(jogadorAtual).every((v) => v !== '');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-200 to-blue-300 p-8">
-      <h1 className="text-3xl font-bold text-center mb-6 text-teal-900">JOGADORES</h1>
+    <div className="flex flex-col items-center bg-white rounded-xl shadow-md max-w-4/5 w-full min-h-7/8 md:max-h-screen m-20">
+      <div className='w-full bg-[var(--verde-piscina)] text-white p-4 rounded-t-xl flex justify-between items-center mb-4'>
+        <button
+              className="flex items-center text-[var(--cinza-claro)] hover:text-white text-sm"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Voltar
+            </button>
+        <h1 className="text-center font-bold text-4xl pr-20">JOGADORES</h1>
+        <div></div>
+      </div>
 
       <div className="flex justify-center mb-4">
         <button
@@ -94,7 +108,7 @@ export default function CadastroJogadores() {
           </ul>
         )}
         <p className="text-sm text-right mt-2 text-gray-600">
-          {jogadores.length}/22 jogadores criados
+          {jogadores.length}/11 jogadores criados
         </p>
       </div>
 
@@ -121,7 +135,7 @@ export default function CadastroJogadores() {
             <input
               type="number"
               name="altura"
-              placeholder="Altura (em metros)"
+              placeholder="Altura (em metros) ex: 1.75"
               value={jogadorAtual.altura}
               onChange={handleChange}
               className="w-full p-2 mb-2 border rounded"

@@ -59,8 +59,6 @@ class RedCardEventService{
 
       break;
 
-      
-
     }
 
     console.log(cartaoVermelho)

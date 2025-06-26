@@ -25,6 +25,7 @@ model User{
 
   campeonato Campeonato[]
   times Time[]
+  campeonatoTime CampeonatoTime[]
 }
 
 model Time{
@@ -90,9 +91,11 @@ model CampeonatoTime {
   id            Int @id @default(autoincrement())
   campeonatoId  Int
   timeId        Int
+  usuarioId     Int
 
   campeonato    Campeonato @relation(fields: [campeonatoId], references: [id])
   time          Time       @relation(fields: [timeId], references: [id])
+  usuario       User    @relation(fields: [usuarioId], references: [id])
 
   @@map("campeonato_time")
 }
@@ -136,7 +139,6 @@ model JogadoresEmCampo {
   jogadorId   Int
   status      String
 
-  // Relation to Jogo
   jogoId      Int
   jogo        Jogo     @relation(fields: [jogoId], references: [id])
 }

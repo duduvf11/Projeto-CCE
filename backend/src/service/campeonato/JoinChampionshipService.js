@@ -70,6 +70,7 @@ class JoinChampionshipService {
         data: {
           campeonatoId: campeonatoId,
           timeId: timeId,
+          usuarioId: usuarioId
         },
         include: {
           campeonato: {

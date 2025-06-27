@@ -8,12 +8,25 @@ import { ListFinishedChampionshipsController } from "../../controller/campeonato
 import { ListOngoingChampionshipsController } from "../../controller/campeonato/ListOngoingChampionshipsController.js";
 import { ListUpcomingChampionshipsController } from "../../controller/campeonato/ListUpcomingChampionshipsController.js";
 import { GetChampionshipController } from "../../controller/campeonato/GetChampionshipController.js";
+import { GetUserChampionshipController } from "../../controller/campeonato/GetUserChampionshipController.js";
 import { JoinChampionshipController } from "../../controller/campeonato/JoinChampionshipController.js";
 import { DeleteTeamChampionshipController } from "../../controller/campeonato/DeleteTeamChampionshipController.js";
 import { GetUserChampionshipController } from "../../controller/campeonato/GetUserChampionshipController.js";
 import { GetChampionshipSubscribedController } from "../../controller/campeonato/GetChampionshipSubscribedController.js";
 
 const router = Router();
+
+//Listar campeonatos finalizados
+router.get("/finished", new ListFinishedChampionshipsController().handle);
+
+//Listar campeonatos em andamento
+router.get("/ongoing", new ListOngoingChampionshipsController().handle);
+
+//Listar campeonatos a começar
+router.get("/upcoming", new ListUpcomingChampionshipsController().handle);
+
+//Listar campeonatos que o usuário está inscrito
+router.get("/subscribed", auth, new GetChampionshipSubscribedController().handle)
 
 //Criar campeonato
 router.post("/", auth, new CreateChampionshipController().handle);
@@ -33,20 +46,8 @@ router.put("/:id", auth, new UpdateChampionshipController().handle);
 //Listar campeonatos do usuario
 router.get("/", auth, new GetUserChampionshipController().handle)
 
-//Listar campeonatos inscritos do usuario
-router.get("/subscribed", auth, new GetChampionshipSubscribedController().handle)
-
-//Listar campeonatos finalizados
-router.get("/finished", new ListFinishedChampionshipsController().handle);
-
 //Listar campeonato
 router.get("/:id", new GetChampionshipController().handle)
-
-//Listar campeonatos em andamento
-router.get("/ongoing", new ListOngoingChampionshipsController().handle);
-
-//Listar campeonatos a começar
-router.get("/upcoming", new ListUpcomingChampionshipsController().handle);
 
 //Mostrar um campeonato
 router.get("/:id", new GetChampionshipController().handle);

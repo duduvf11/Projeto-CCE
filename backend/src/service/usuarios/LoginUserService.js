@@ -22,15 +22,15 @@ class LoginUserService{
 
     const token = sign({
       nome: user.nome,
-      email: user.email
+      email: user.email,
+      admin: user.admin,
+      id: user.id
     }, process.env.JWT_SECRET, {
       subject: userId.toString(),
       expiresIn: "30d"
     })
 
     return {
-      id: userId,
-      admin: user.admin,
       token: token
     }
   }

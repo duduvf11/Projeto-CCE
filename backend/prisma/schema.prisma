@@ -88,10 +88,13 @@ model Campeonato {
 }
 
 model CampeonatoTime {
-  id            Int @id @default(autoincrement())
-  campeonatoId  Int
-  timeId        Int
-  usuarioId     Int
+  id             Int @id @default(autoincrement())
+  campeonatoId   Int
+  nomeCampeonato String
+  timeId         Int
+  nomeTime       String
+  usuarioId      Int
+
 
   campeonato    Campeonato @relation(fields: [campeonatoId], references: [id])
   time          Time       @relation(fields: [timeId], references: [id])

@@ -25,6 +25,7 @@ model User{
 
   campeonato Campeonato[]
   times Time[]
+  campeonatoTime CampeonatoTime[]
 }
 
 model Time{
@@ -36,6 +37,9 @@ model Time{
 
   jogadores Jogador[]
   campeonatoTime CampeonatoTime[]
+
+  jogosComoTimeA   Jogo[] @relation("TimeAForJogo")
+  jogosComoTimeB   Jogo[] @relation("TimeBForJogo")
 
   @@map("times")
 }
@@ -55,6 +59,8 @@ model Jogador{
 
   time Time @relation(fields: [idTime], references: [id])
 
+  eventos Evento[]
+
   @@map("jogadores")
 }
 
@@ -62,7 +68,6 @@ enum Formato{
   MATA_MATA
   GRUPO
   MATA_MATA_CHAVEAMENTO
-  SUICO
 }
 
 model Campeonato {
@@ -86,10 +91,87 @@ model CampeonatoTime {
   id            Int @id @default(autoincrement())
   campeonatoId  Int
   timeId        Int
+  usuarioId     Int
 
   campeonato    Campeonato @relation(fields: [campeonatoId], references: [id])
   time          Time       @relation(fields: [timeId], references: [id])
+  usuario       User    @relation(fields: [usuarioId], references: [id])
 
   @@map("campeonato_time")
+}
+
+enum StatusJogo{
+  PENDENTE
+  EM_ANDAMENTO
+  FINALIZADO
+}
+
+model Jogo {
+  id              Int           @id @default(autoincrement())
+  campeonatoId    Int
+  nomeA           String?
+  nomeB           String?
+  timeA           Int?
+  timeB           Int?
+  horario         DateTime?
+  status          StatusJogo
+  jogo            Int
+  fase            Int
+  golsA           Int           @default(0)
+  golsB           Int           @default(0)
+  vencedor        Int?          @default(0)
+  estatisticaAId  Int?
+  estatisticaBId  Int? 
+
+  timeAId           Time?              @relation("TimeAForJogo", fields: [timeA], references: [id])
+  timeBId           Time?              @relation("TimeBForJogo", fields: [timeB], references: [id])
+
+  estatisticaA    Estatistica? @relation("GameStatsA", fields: [estatisticaAId], references: [id])
+  estatisticaB    Estatistica? @relation("GameStatsB", fields: [estatisticaBId], references: [id])
+
+  jogadoresEmCampo JogadoresEmCampo[]
+
+  eventos Evento[]
+}
+
+model JogadoresEmCampo {
+  id          Int      @id @default(autoincrement())
+  jogadorId   Int
+  status      String
+
+  jogoId      Int
+  jogo        Jogo     @relation(fields: [jogoId], references: [id])
+}
+
+model Estatistica {
+  id              Int     @id @default(autoincrement())
+  assistencias    Int     @default(0)
+  finalizacoes    Int     @default(0)
+  faltas          Int     @default(0)
+  cartaoAmarelo   Int     @default(0)
+  cartaoVermelho  Int     @default(0)
+  penaltis        Int     @default(0)
+  escanteios      Int     @default(0)
+  impedimentos    Int     @default(0)
+
+  // Relations back to Jogo
+  jogoAsTeamA     Jogo[] @relation("GameStatsA")
+  jogoAsTeamB     Jogo[] @relation("GameStatsB")
+}
+
+enum Eventos{
+  GOL
+  CARTA_AMARELO
+  CARTAO_VERMELHO
+}
+
+model Evento {
+  id          Int     @id @default(autoincrement())
+  jogoId      Int
+  jogadorId   Int
+  tipoEvento  Eventos
+
+  jogadores Jogador @relation(fields: [jogadorId], references: [id])
+  jogo    Jogo    @relation(fields: [jogoId], references: [id])
 }
 

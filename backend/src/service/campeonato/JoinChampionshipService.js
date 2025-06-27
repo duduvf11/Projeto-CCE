@@ -12,21 +12,35 @@ class JoinChampionshipService {
         where: { id: timeId },
       });
 
+
       if (!time) {
         throw new Error("Time não encontrado.");
       }
 
-      if (time.usuarioId !== usuarioId) {
+      if (time.usuario !== usuarioId) {
         throw new Error("Você não é o proprietário deste time.");
       }
 
-      // 2
+
       const campeonato = await prismaClient.campeonato.findUnique({
-        where: { id: campeonatoId },
+        where: { id: campeonatoId }
       });
+
+      console.log(campeonato)
 
       if (!campeonato) {
         throw new Error("Campeonato não encontrado.");
+      }
+
+      const timeExiste = await prismaClient.campeonatoTime.findFirst({
+        where: {
+          campeonatoId,
+          timeId
+        }
+      })
+
+      if (timeExiste){
+        throw new Error("Time já inscrito")
       }
 
       if (new Date(campeonato.dataInicio) <= new Date()) {
@@ -56,6 +70,7 @@ class JoinChampionshipService {
         data: {
           campeonatoId: campeonatoId,
           timeId: timeId,
+          usuarioId: usuarioId
         },
         include: {
           campeonato: {

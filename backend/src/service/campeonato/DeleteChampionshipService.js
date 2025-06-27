@@ -27,10 +27,6 @@ class DeleteChampionshipService {
         },
       });
 
-      // Não há retorno específico em caso de sucesso de deleção,
-      // a menos que você queira retornar o ID do item deletado ou uma mensagem.
-      // O controller já envia um status 204.
-
     } catch (err) {
       console.error("Erro no serviço ao deletar campeonato:", err.message);
       throw new Error(err.message); // Relança o erro para o controller

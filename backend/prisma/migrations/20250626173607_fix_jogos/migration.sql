@@ -1,0 +1,2 @@
+-- AddForeignKey
+ALTER TABLE "Jogo" ADD CONSTRAINT "Jogo_timeB_fkey" FOREIGN KEY ("timeB") REFERENCES "times"("id") ON DELETE SET NULL ON UPDATE CASCADE;

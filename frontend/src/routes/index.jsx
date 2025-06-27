@@ -7,7 +7,8 @@ import MeusCampeonatos from '../pages/Campeonatos/MeusCampeonatos.jsx'
 import Inscritos from '../pages/Campeonatos/Inscritos.jsx'
 import MeusTimes from '../pages/Times/MeusTimes.jsx'
 import Jogadores from '../pages/Times/Jogadores.jsx'
-import ControlePartida from '../pages/Partida/ControlePartida.jsx' // <<< ADICIONE AQUI A IMPORTAÇÃO
+import ControlePartida from '../pages/Partida/ControlePartida.jsx'
+import JogoEmAndamento from '../pages/Partida/JogoEmAndamento.jsx'
 import VerCampeonato from '../pages/Campeonatos/VerCampeonato.jsx';
 
 export default function AppRoutes() {
@@ -27,6 +28,7 @@ export default function AppRoutes() {
           <Route path="/meus-times" element={<MeusTimes />} />
           <Route path="/meus-times/jogadores" element={<Jogadores />} />
           <Route path="/partida/:partidaId" element={<ControlePartida />} /> 
+          <Route path="/partida/:partidaId" element={<JogoEmAndamento />} />
         </Route>
 
       </Routes>

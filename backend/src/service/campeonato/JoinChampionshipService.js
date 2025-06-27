@@ -55,7 +55,9 @@ class JoinChampionshipService {
       const newEntry = await prismaClient.campeonatoTime.create({
         data: {
           campeonatoId: campeonatoId,
+          nomeCampeonato: campeonato.nome,
           timeId: timeId,
+          nomeTime: time.nome,
           usuarioId: usuarioId
         },
         include: {

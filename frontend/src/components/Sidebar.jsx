@@ -17,9 +17,6 @@ function Sidebar() {
         <li className="mb-4">
             <Link to="/campeonatos-inscritos" className="hover:underline">Campeonatos Inscritos</Link>
         </li>
-        <li className="mb-4">
-          <Link to="/partida/123" className="hover:underline">Controle Jogo</Link>
-        </li>
 
       </ul>
     </div>

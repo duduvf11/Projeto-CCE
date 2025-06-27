@@ -1,9 +1,11 @@
-import { GenerateGamesService } from "../../service/campeonato/GenerateGamesService.js";
+import { GenerateGameService } from "../../service/jogos/GenerateGameService.js";
 
-class GenerateGamesController {
+//numero de times, formato, 
+
+class GenerateGameController {
   async handle(req, res) {
     try {
-      const usuarioId = parseInt(req.user_id);
+      const usuarioId = 2
       const { campeonatoId } = req.params;
       const parsedCampeonatoId = parseInt(campeonatoId);
 
@@ -11,11 +13,10 @@ class GenerateGamesController {
         return res.status(400).json({ error: "IDs de usuário ou campeonato inválidos." });
       }
 
-      const generateGamesService = new GenerateGamesService();
+      const generateGamesService = new GenerateGameService();
 
       const generatedGames = await generateGamesService.execute({
         usuarioId,
-        campeonatoId: parsedCampeonatoId,
       });
 
       return res.status(201).json({
@@ -29,4 +30,4 @@ class GenerateGamesController {
   }
 }
 
-export { GenerateGamesController };
+export { GenerateGameController };

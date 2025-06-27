@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Jogo" ALTER COLUMN "vencedor" DROP NOT NULL,
-ALTER COLUMN "vencedor" SET DEFAULT 0;

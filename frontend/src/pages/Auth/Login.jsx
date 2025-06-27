@@ -59,10 +59,6 @@ function Login() {
             onChange={handleChange}
           />
 
-          <Link to="#" className="text-sm text-[var(--preto)] hover:underline">
-            Esqueci a senha
-          </Link>
-
           <button className="bg-[var(--verde-claro)] text-white font-bold py-2 px-4 rounded-full self-end">
             LOGIN
           </button>

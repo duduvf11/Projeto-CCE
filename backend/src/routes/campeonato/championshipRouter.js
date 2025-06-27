@@ -11,7 +11,6 @@ import { GetChampionshipController } from "../../controller/campeonato/GetChampi
 import { GetUserChampionshipController } from "../../controller/campeonato/GetUserChampionshipController.js";
 import { JoinChampionshipController } from "../../controller/campeonato/JoinChampionshipController.js";
 import { DeleteTeamChampionshipController } from "../../controller/campeonato/DeleteTeamChampionshipController.js";
-import { GetUserChampionshipController } from "../../controller/campeonato/GetUserChampionshipController.js";
 import { GetChampionshipSubscribedController } from "../../controller/campeonato/GetChampionshipSubscribedController.js";
 
 const router = Router();

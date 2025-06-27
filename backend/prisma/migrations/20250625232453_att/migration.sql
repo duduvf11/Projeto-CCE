@@ -1,2 +1,0 @@
--- AddForeignKey
-ALTER TABLE "Jogo" ADD CONSTRAINT "Jogo_timeA_fkey" FOREIGN KEY ("timeA") REFERENCES "times"("id") ON DELETE SET NULL ON UPDATE CASCADE;

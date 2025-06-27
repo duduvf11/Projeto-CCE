@@ -5,6 +5,9 @@ import { YellowCardEventController } from "../../controller/eventos/YellowCardEv
 import { AssistEventController } from "../../controller/eventos/AssistEventController.js";
 import { OffsideEventController } from "../../controller/eventos/OffsideEventController.js";
 import { PenaltiEventController } from "../../controller/eventos/PenaltiEventController.js";
+import { GetEventsController } from "../../controller/eventos/GetEventsController.js";
+import { GetStatsController } from "../../controller/eventos/GetStatsController.js";
+
 
 const router = Router()
 
@@ -27,6 +30,13 @@ router.post("/offside/:jogoId/:time", new OffsideEventController().handle)
 router.post("/penalti/:jogoId/:time", new PenaltiEventController().handle)
 
 //Adicionar finalizacao
+//router.post("/shot/:jogoId/:time")
 
+//Pegar eventos da partida
+router.get("/:jogoId", new GetEventsController().handle)
+
+
+//Pegar estatisticas da partida
+router.get("/stats/:jogoId", new GetStatsController().handle)
 
 export default router

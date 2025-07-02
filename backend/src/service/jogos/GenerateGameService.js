@@ -60,6 +60,7 @@ class GenerateGameService {
 
     while (jogosNaFaseAtual > 1) {
         faseAtual++;
+        let jogo = 1;
         let jogosProximaFase = Math.ceil(jogosNaFaseAtual / 2);
 
         for (let j = 0; j < jogosProximaFase; j++) {

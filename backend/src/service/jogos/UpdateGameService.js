@@ -43,14 +43,11 @@ class UpdateGameService{
       switch (campeonato.formato){
         case "MATA_MATA":
 
-
+        
 
         case "GRUPO":
       }
 
-      //pesquiso campeonato
-
-      //update jogo
 
     } catch(err){
       console.error("Erro ao iniciar partida: " + err)
